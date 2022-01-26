@@ -1,22 +1,38 @@
 
 from bs4 import BeautifulSoup
-  
-HTMLFile = open("name_of_your_file.html", "r", encoding="utf8")
+import xlsxwriter
 
-index = HTMLFile.read()
+class phraser():
+    def go(self):
+        self.HTMLFile = open("file.html", "r", encoding="utf8")
+        self.index = self.HTMLFile.read()
+        self.S = BeautifulSoup(self.index, 'lxml')
+        self.list=[]
+        self.tag_name = self.S.find_all('div')
 
-S = BeautifulSoup(index, 'lxml')
+        for self.tag in self.tag_name:
+            if 'senchatest=' in str(self.tag):
+                self.tag=str(self.tag)
+                self.sencha = self.tag.partition("senchatest=")[2]
+                self.sencha = self.sencha.split("\"")[1]
+                self.list.append(self.sencha)
 
-list=[]
+        for i in self.list:
+            print(i)
 
-tag_name = S.find_all('div')
+    def excel(self):
+        self.outWorkbook = xlsxwriter.Workbook("out2.xlsx")
+        self.outSheet = self.outWorkbook.add_worksheet()
+        self.value = self.list
+        self.outSheet.write("A1", "senchatest")
+        self.outSheet.write("B1", "second")
+        self.outSheet.write("C1", "third")
 
-for tag in tag_name:
-    if 'tag_name=' in str(tag): # define your custom tag name
-        tag=str(tag)
-        sencha = tag.partition("tag_name=")[2] # and here
-        sencha = sencha.split("\"")[1]
-        list.append(sencha)
-        
-for i in list:
-    print(i)
+        for item in range (len(self.list)):
+            self.outSheet.write(item+1, 0, self.list[item])
+
+        self.outWorkbook.close()
+
+phraser = phraser()
+phraser.go()
+phraser.excel()
